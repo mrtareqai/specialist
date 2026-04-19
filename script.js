@@ -30,43 +30,22 @@ function generateOrderNumber() {
 const TELEGRAM_BOT_TOKEN = '8316425660:AAEBNk5ZWULPe6JP4_4Dsds5fwZUWLqneMQ';
 const TELEGRAM_CHAT_ID = '5342929752';
 
-// رابط الموقع الصحيح
-const SITE_URL = 'https://specialist.nichesite.org';
+// رابط الموقع - يتم أخذه تلقائياً من الرابط الحالي
+const SITE_URL = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
 
-// دالة تقصير الرابط باستخدام TinyURL (مجاني بدون مفتاح)
-async function shortenUrl(longUrl) {
-    try {
-        // نستخدم allorigins لتخطي مشكلة CORS التي تمنع التقصير من المتصفح
-        const apiUrl = `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`;
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`);
-
-        if (response.ok) {
-            const shortUrl = await response.text();
-            if (shortUrl && shortUrl.startsWith('http')) {
-                return shortUrl;
-            }
-        }
-    } catch (e) {
-        console.log('URL shortener error:', e);
-    }
-    return longUrl; // في حالة فشل التقصير، أرجع الرابط الأصلي
-}
-
-// دالة إرسال إشعار تلقائي إلى التيليجرام
+// دالة إرسال إشعار تلقائي إلى التيليجرام مع رابط النتيجة الكاملة
 async function sendTelegramNotification(name, age, orderId, scores) {
-    // بناء الرابط الكامل
+    // بناء رابط صفحة النتيجة الكاملة
     const scoreValues = specialtyKeys.map(key => scores[key] || 0).join(',');
-    const longLink = `${SITE_URL}/result.html?n=${encodeURIComponent(name)}&a=${age}&s=${scoreValues}`;
-
-    // تقصير الرابط عبر TinyURL
-    const resultLink = await shortenUrl(longLink);
+    const resultLink = `${SITE_URL}/result.html?n=${encodeURIComponent(name)}&a=${age}&s=${scoreValues}`;
 
     const message =
-        `🔔 <b>طلب نتيجة جديد!</b>\n\n` +
+        `🔔 <b>اختبار جديد مكتمل!</b>\n\n` +
         `👤 <b>الاسم:</b> ${name}\n` +
         `🎂 <b>العمر:</b> ${age}\n` +
+        `📱 <b>الهاتف/الهوية:</b> ${userData.phoneOrId}\n` +
         `🆔 <b>رقم الطلب:</b> <code>${orderId}</code>\n\n` +
-        `🔗 <b>رابط النتيجة (أرسله للمستخدم بعد الدفع):</b>\n${resultLink}`;
+        `🔗 <b>رابط النتيجة الكاملة:</b>\n${resultLink}`;
 
     try {
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -78,8 +57,9 @@ async function sendTelegramNotification(name, age, orderId, scores) {
                 parse_mode: 'HTML'
             })
         });
+        console.log('✅ تم إرسال إشعار التيليجرام بنجاح');
     } catch (e) {
-        console.log('Telegram notification error:', e);
+        console.log('❌ خطأ في إرسال إشعار التيليجرام:', e);
     }
 }
 
@@ -240,8 +220,17 @@ function finishQuiz() {
 
     setTimeout(() => {
         document.getElementById('loading').classList.remove('show');
-        showWhatsAppModal();
-    }, 1200);
+
+        // حساب النتائج
+        const scores = calculateScores();
+
+        // إرسال إشعار تلقائي للتيليجرام مع رابط النتيجة الكاملة
+        const orderNumber = generateOrderNumber();
+        sendTelegramNotification(userData.fullName, userData.age, orderNumber, scores);
+
+        // عرض النتائج الكاملة للمستخدم مباشرة
+        showResults();
+    }, 1500);
 }
 
 function showWhatsAppModal() {
