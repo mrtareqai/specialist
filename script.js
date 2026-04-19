@@ -228,19 +228,13 @@ function finishQuiz() {
         const orderNumber = generateOrderNumber();
         sendTelegramNotification(userData.fullName, userData.age, orderNumber, scores);
 
-        // عرض النتائج الكاملة للمستخدم مباشرة
-        showResults();
+        // عرض رسالة الواتساب للمستخدم
+        showWhatsAppModal();
     }, 1500);
 }
 
 function showWhatsAppModal() {
-    const orderNumber = generateOrderNumber();
-
-    // حساب النتائج وإرسال إشعار تلقائي للتيليجرام (مع الرابط الكامل)
-    const scores = calculateScores();
-    sendTelegramNotification(userData.fullName, userData.age, orderNumber, scores);
-
-    // رسالة واتساب - الاسم والعمر فقط، بدون رقم الطلب
+    // رسالة واتساب - الاسم والعمر فقط
     const message = `مرحبا، أريد النتيجة\n\nالاسم: ${userData.fullName}\nالعمر: ${userData.age}`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/967779175085?text=${encodedMessage}`;
