@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إختصاصي - اكتشف تخصصك الجامعي</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- Open Graph - تزيين الرابط عند المشاركة -->
+    <meta property="og:title" content="إختصاصي - اكتشف تخصصك الجامعي">
+    <meta property="og:description"
+        content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك. أجب على 80 سؤالاً واكتشف مستقبلك!">
+    <meta property="og:image" content="https://specialist.nichesite.org/logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ar_AR">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="إختصاصي - اكتشف تخصصك الجامعي">
+    <meta name="twitter:description" content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك">
+    <meta name="twitter:image" content="logo.png">
+
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="logo.png" alt="إختصاصي" class="site-logo">
+            <h1>إختصاصي</h1>
+            <p>اكتشف التخصص الجامعي المناسب لك</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-info">
+                <span id="progressText">السؤال 1 من 80</span>
+                <span id="progressPercent">1%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 1%"></div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-icon">🎓</div>
+                <h2>مرحباً بك في اختبار الإرشاد المهني</h2>
+                <p>هذا الاختبار يساعدك على اكتشاف التخصص الجامعي الأنسب لشخصيتك وقدراتك. سيستغرق منك حوالي 15-20 دقيقة
+                    للإجابة على 80 سؤال.</p>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">🧠</div>
+                        <div class="feature-title">تحليل شخصية</div>
+                        <div class="feature-desc">30 سؤال عن سماتك الشخصية</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">📚</div>
+                        <div class="feature-title">تخصصات متنوعة</div>
+                        <div class="feature-desc">50 سؤال عن 10 مجالات</div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">✨</div>
+                        <div class="feature-title">نتائج ذكية</div>
+                        <div class="feature-desc">تحليل متقدم للنتائج</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="showUserForm()" style="margin-top: 20px;">
+                    ابدأ الاختبار الآن ←
+                </button>
+            </div>
+
+            <!-- User Form -->
+            <div id="userForm" style="display: none;">
+                <h2 style="margin-bottom: 25px; text-align: center;">📝 أدخل بياناتك</h2>
+
+                <div class="form-group">
+                    <label for="fullName">الاسم الكامل *</label>
+                    <input type="text" id="fullName" placeholder="أدخل اسمك الكامل" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneOrId">رقم الهاتف أو رقم الهوية *</label>
+                    <input type="text" id="phoneOrId" placeholder="مثال: 0501234567 أو رقم الهوية" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">العمر *</label>
+                    <input type="number" id="age" placeholder="مثال: 18" min="15" max="100" required>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="showWelcome()">→ السابق</button>
+                    <button class="btn btn-primary" onclick="startQuiz()">بدء الاختبار ←</button>
+                </div>
+            </div>
+
+            <!-- Quiz Container -->
+            <div id="quizContainer" style="display: none;">
+                <div id="questionContainer" class="question-container active"></div>
+
+                <div class="btn-container">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>→
+                        السابق</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>جاري تحليل النتائج...</p>
+            </div>
+
+            <!-- Results -->
+            <div class="results-container" id="resultsContainer">
+                <div class="results-header">
+                    <h2>🎉 نتائج اختبارك المهني</h2>
+                </div>
+
+                <div class="user-info-display">
+                    <h3 id="resultUserName"></h3>
+                    <p id="resultUserInfo"></p>
+                </div>
+
+                <h3 style="margin-bottom: 20px; text-align: center;">أفضل 3 تخصصات موصى بها لك:</h3>
+
+                <div class="top-specialties" id="topSpecialties"></div>
+
+                <div class="chart-container">
+                    <div class="chart-title">📊 توزيع النقاط حسب المجال</div>
+                    <div class="bar-chart" id="barChart"></div>
+                </div>
+
+                <!-- Payment Section -->
+                <div class="payment-section">
+                    <div class="payment-box">
+                        <h3>💳 للحصول على التقرير الكامل والنتائج التفصيلية</h3>
+                        <p class="payment-description">يرجى التواصل معنا عبر أحد الخيارات التالية</p>
+
+                        <div class="payment-buttons">
+                            <a href="https://wa.me/967779175085" target="_blank" class="btn btn-whatsapp">
+                                💬 التواصل عبر WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Modal -->
+    <div class="modal" id="whatsappModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📱 للحصول على النتيجة الكاملة</h2>
+            </div>
+            <div class="modal-body">
+                <p class="modal-message">تم استلام طلبك ✅<br>تواصل معنا عبر WhatsApp لاستلام نتيجتك الكاملة بعد التحقق
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="" id="whatsappLink" target="_blank" class="btn btn-whatsapp btn-large">
+                    💬 تواصل عبر WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="questions.js?v=2"></script>
+    <script src="script.js?v=2"></script>
+</body>
+
+</html>

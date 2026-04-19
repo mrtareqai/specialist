@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتيجتك - إختصاصي</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="نتيجتك الكاملة - إختصاصي">
+    <meta property="og:description" content="اكتشف التخصص الجامعي الأنسب لك بناءً على تحليل شخصيتك وقدراتك.">
+    <meta property="og:image" content="https://specialist.nichesite.org/logo.png">
+    <meta property="og:type" content="website">
+
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="logo.png" alt="إختصاصي" class="site-logo">
+            <h1>إختصاصي</h1>
+            <p>نتيجتك الكاملة</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div id="resultContent" class="result-display">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>جاري تحميل النتيجة...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer with action buttons -->
+        <div style="padding: 20px; text-align: center; border-top: 1px solid var(--border-color);">
+            <button class="btn btn-primary" onclick="window.location.href='index.html'" style="margin-bottom: 10px;">
+                ← إجراء اختبار آخر
+            </button>
+            <div style="margin-top: 15px;">
+                <a href="https://wa.me/967779175085" target="_blank" class="btn btn-whatsapp"
+                    style="display: inline-block; margin: 5px;">
+                    💬 التواصل عبر WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="questions.js?v=2"></script>
+    <script src="result.js?v=2"></script>
+</body>
+
+</html>
