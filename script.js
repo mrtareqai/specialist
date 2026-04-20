@@ -325,21 +325,37 @@ function showWhatsAppGate() {
         `العمر: ${userData.age}\n` +
         `رقم الطلب: ${currentOrderNumber}`;
 
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappLink = `https://wa.me/967779175085?text=${encodedMessage}`;
+    const whatsappLink =
+        `https://wa.me/967779175085?text=${encodeURIComponent(message)}`;
 
+    // زر الواتساب
     const btn = document.getElementById('whatsappBtn');
     if (btn) {
         btn.href = whatsappLink;
     }
 
+    // إظهار البوابة
     const gate = document.getElementById('whatsappGate');
     if (gate) {
         gate.style.display = 'flex';
         gate.classList.add('show');
     }
-}
 
+    // 🔥 مهم: منع التمرير + إخفاء أي محتوى خلفي
+    document.body.classList.add('gate-active');
+
+    // 🔒 اختياري: تفريغ أي محتوى ممكن يحتوي نتائج (حماية إضافية)
+    const quiz = document.getElementById('quizContainer');
+    if (quiz) quiz.innerHTML = '';
+
+    const loading = document.getElementById('loading');
+    if (loading) loading.innerHTML = '';
+
+    // 🧠 تركيز المستخدم (تجربة أفضل)
+    if (btn) {
+        setTimeout(() => btn.focus(), 300);
+    }
+}
 function calculateScores() {
     const scores = {};
     specialtyKeys.forEach(key => {
