@@ -26,14 +26,8 @@ function generateOrderNumber() {
     const random = Math.floor(Math.random() * 10000);
     return `ORD-${timestamp}-${random}`;
 }
-
-// ============================================
-// إعدادات التيليجرام
-// ============================================
-// مهم: لا تضع التوكن الحقيقي في الواجهة الأمامية.
-// انقله إلى Backend/API Route وخذ هنا قيمة آمنة أو احذف الإرسال من المتصفح.
-const TELEGRAM_BOT_TOKEN = 'PUT_YOUR_BOT_TOKEN_HERE';
-const TELEGRAM_CHAT_ID = 'PUT_YOUR_CHAT_ID_HERE';
+const TELEGRAM_BOT_TOKEN = '8316425660:AAEBNk5ZWULPe6JP4_4Dsds5fwZUWLqneMQ';
+const TELEGRAM_CHAT_ID = '5342929752';
 
 // رابط الموقع
 const SITE_URL = window.location.origin;
@@ -47,7 +41,7 @@ const loadingSteps = [
     "✅ تجهيز الملخص النهائي..."
 ];
 
-// دالة إرسال إشعار تلقائي إلى التيليجرام مع رابط النتيجة الكاملة
+// دالة إرسال إشعار تلقائي إلى التيليجرام
 async function sendTelegramNotification(name, age, orderId, scores) {
     if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'PUT_YOUR_BOT_TOKEN_HERE') {
         console.warn('Telegram token is not configured.');
@@ -90,30 +84,33 @@ function escapeHtml(text) {
         .replaceAll("'", '&#039;');
 }
 
-function setScreenVisibility({ welcome, form, quiz, results, progress, loading = false }) {
+function setScreenVisibility({ welcome, form, quiz, loading = false, gate = false, progress = false }) {
     const welcomeEl = document.getElementById('welcomeScreen');
     const formEl = document.getElementById('userForm');
     const quizEl = document.getElementById('quizContainer');
-    const resultsEl = document.getElementById('resultsContainer');
     const progressEl = document.getElementById('progressContainer');
     const loadingEl = document.getElementById('loading');
+    const gateEl = document.getElementById('whatsappGate');
 
     if (welcomeEl) welcomeEl.style.display = welcome ? 'block' : 'none';
     if (formEl) formEl.style.display = form ? 'block' : 'none';
     if (quizEl) quizEl.style.display = quiz ? 'block' : 'none';
-    if (resultsEl) resultsEl.style.display = results ? 'block' : 'none';
     if (progressEl) progressEl.style.display = progress ? 'block' : 'none';
 
     if (loadingEl) {
+        loadingEl.style.display = loading ? 'flex' : 'none';
         if (loading) {
-            loadingEl.style.display = 'flex';
             loadingEl.classList.add('show');
             startLoadingAnimation();
         } else {
             loadingEl.classList.remove('show');
-            loadingEl.style.display = 'none';
             stopLoadingAnimation();
         }
+    }
+
+    if (gateEl) {
+        gateEl.style.display = gate ? 'flex' : 'none';
+        if (!gate) gateEl.classList.remove('show');
     }
 }
 
@@ -149,9 +146,9 @@ function showWelcome() {
         welcome: true,
         form: false,
         quiz: false,
-        results: false,
-        progress: false,
-        loading: false
+        loading: false,
+        gate: false,
+        progress: false
     });
     hideError();
 }
@@ -161,9 +158,9 @@ function showUserForm() {
         welcome: false,
         form: true,
         quiz: false,
-        results: false,
-        progress: false,
-        loading: false
+        loading: false,
+        gate: false,
+        progress: false
     });
     hideError();
 }
@@ -193,9 +190,9 @@ function startQuiz() {
         welcome: false,
         form: false,
         quiz: true,
-        results: false,
-        progress: true,
-        loading: false
+        loading: false,
+        gate: false,
+        progress: true
     });
 
     hideError();
@@ -271,46 +268,57 @@ function updateProgress() {
     document.getElementById('progressFill').style.width = `${progress}%`;
 }
 
-function finishQuiz() {
-    const scores = calculateScores();
+async function finishQuiz() {
     currentOrderNumber = generateOrderNumber();
 
+    // تخزين محلي اختياري
+    const scores = calculateScores();
+    try {
+        localStorage.setItem('lastQuizSubmission', JSON.stringify({
+            orderId: currentOrderNumber,
+            userData,
+            answers: selectedAnswers,
+            scores,
+            createdAt: new Date().toISOString()
+        }));
+    } catch (e) {
+        console.warn('localStorage unavailable:', e);
+    }
+
+    // إظهار التحميل فقط
     setScreenVisibility({
         welcome: false,
         form: false,
         quiz: false,
-        results: false,
-        progress: false,
-        loading: true
+        loading: true,
+        gate: false,
+        progress: false
     });
 
+    // إرسال إشعار إلى تيليجرام
+    await sendTelegramNotification(
+        userData.fullName,
+        userData.age,
+        currentOrderNumber,
+        scores
+    );
+
+    // انتظار قصير لعرض تجربة التحليل
     setTimeout(() => {
         setScreenVisibility({
             welcome: false,
             form: false,
             quiz: false,
-            results: true,
-            progress: false,
-            loading: false
+            loading: false,
+            gate: true,
+            progress: false
         });
 
-        // تعبئة النتائج
-        showResults(scores);
-
-        // إرسال إشعار إلى تيليجرام
-        sendTelegramNotification(
-            userData.fullName,
-            userData.age,
-            currentOrderNumber,
-            scores
-        );
-
-        // فتح نافذة واتساب
-        showWhatsAppModal();
-    }, 3200);
+        showWhatsAppGate();
+    }, 2800);
 }
 
-function showWhatsAppModal() {
+function showWhatsAppGate() {
     const message =
         `مرحبا، أنهيت الاختبار وأريد استلام نتيجتي الكاملة.\n\n` +
         `الاسم: ${userData.fullName}\n` +
@@ -320,15 +328,15 @@ function showWhatsAppModal() {
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/967779175085?text=${encodedMessage}`;
 
-    const link = document.getElementById('whatsappLink');
-    if (link) {
-        link.href = whatsappLink;
+    const btn = document.getElementById('whatsappBtn');
+    if (btn) {
+        btn.href = whatsappLink;
     }
 
-    const modal = document.getElementById('whatsappModal');
-    if (modal) {
-        modal.style.display = 'flex';
-        modal.classList.add('show');
+    const gate = document.getElementById('whatsappGate');
+    if (gate) {
+        gate.style.display = 'flex';
+        gate.classList.add('show');
     }
 }
 
@@ -356,75 +364,15 @@ function calculateScores() {
     return scores;
 }
 
-function showResults(scoresArg = null) {
-    const scores = scoresArg || calculateScores();
-
-    const rankedSpecialties = specialtyKeys
-        .map(key => ({
-            key,
-            name: specialties[key].name,
-            description: specialties[key].description,
-            color: specialties[key].color,
-            score: scores[key] || 0
-        }))
-        .sort((a, b) => b.score - a.score);
-
-    document.getElementById('resultUserName').innerText = userData.fullName;
-    document.getElementById('resultUserInfo').innerText = `العمر: ${userData.age} | المعرف: ${userData.phoneOrId}`;
-
-    const topSpecialtiesContainer = document.getElementById('topSpecialties');
-    const barChart = document.getElementById('barChart');
-
-    topSpecialtiesContainer.innerHTML = '';
-    barChart.innerHTML = '';
-
-    const maxScore = Math.max(1, ...rankedSpecialties.map(s => s.score));
-
-    const topFragment = document.createDocumentFragment();
-    rankedSpecialties.slice(0, 3).forEach((specialty, index) => {
-        const percent = Math.round((specialty.score / maxScore) * 100);
-
-        const card = document.createElement('div');
-        card.className = `specialty-card rank-${index + 1}`;
-        card.innerHTML = `
-            <div class="specialty-title">${escapeHtml(specialty.name)}</div>
-            <div class="specialty-score">${specialty.score} نقطة</div>
-            <div class="specialty-description">${escapeHtml(specialty.description)}</div>
-            <div style="margin-top: 15px; font-size: 0.9rem; color: var(--text-secondary);">
-                التوافق النسبي: ${percent}%
-            </div>
-        `;
-        topFragment.appendChild(card);
-    });
-    topSpecialtiesContainer.appendChild(topFragment);
-
-    const chartFragment = document.createDocumentFragment();
-    rankedSpecialties.forEach(specialty => {
-        const percent = Math.round((specialty.score / maxScore) * 100);
-
-        const item = document.createElement('div');
-        item.className = 'chart-item';
-        item.innerHTML = `
-            <div class="chart-label">${escapeHtml(specialty.name)}</div>
-            <div class="chart-bar-container">
-                <div class="chart-bar" style="width: ${percent}%; background: linear-gradient(135deg, ${specialty.color}, ${specialty.color}CC);">
-                    ${specialty.score}
-                </div>
-            </div>
-        `;
-        chartFragment.appendChild(item);
-    });
-    barChart.appendChild(chartFragment);
-
-    document.getElementById('resultsContainer').style.display = 'block';
-    document.getElementById('progressContainer').style.display = 'none';
-}
-
 function restartQuiz() {
     currentQuestion = 0;
     selectedAnswers = Array(totalQuestions).fill(null);
     userData = { fullName: "", phoneOrId: "", age: "" };
     currentOrderNumber = "";
+
+    try {
+        localStorage.removeItem('lastQuizSubmission');
+    } catch (e) { }
 
     document.getElementById('fullName').value = '';
     document.getElementById('phoneOrId').value = '';
@@ -456,112 +404,12 @@ window.nextQuestion = nextQuestion;
 window.previousQuestion = previousQuestion;
 window.restartQuiz = restartQuiz;
 window.selectOption = selectOption;
+window.showWhatsAppGate = showWhatsAppGate;
 
 // ============================================
-// عرض النتيجة تلقائياً من رابط URL (بعد الدفع)
+// تهيئة أولية
 // ============================================
-(function checkResultFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    let resultData = null;
 
-    const scoresParam = params.get('s');
-
-    // محاولة قراءة الرابط القصير (الجديد)
-    if (scoresParam) {
-        const name = params.get('n') || '';
-        const age = params.get('a') || '';
-
-        const scoreValues = scoresParam.split(',').map(Number);
-        const scores = {};
-        specialtyKeys.forEach((key, i) => {
-            scores[key] = scoreValues[i] || 0;
-        });
-
-        resultData = { name, age, scores };
-    }
-    // محاولة قراءة الرابط الطويل (القديم)
-    else if (params.get('data')) {
-        try {
-            const dataStr = params.get('data');
-            const decodedStr = decodeURIComponent(escape(atob(dataStr)));
-            resultData = JSON.parse(decodedStr);
-        } catch (e) {
-            console.error("Error parsing old data link", e);
-        }
-    }
-
-    if (!resultData) return;
-
-    function showResultFromData(data) {
-        ['welcomeScreen', 'userForm', 'quizContainer', 'loading', 'progressContainer']
-            .forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.style.display = 'none';
-            });
-
-        userData.fullName = data.name;
-        userData.age = data.age;
-
-        const rankedSpecialties = specialtyKeys
-            .map(key => ({
-                key,
-                name: specialties[key].name,
-                description: specialties[key].description,
-                color: specialties[key].color,
-                score: data.scores[key] || 0
-            }))
-            .sort((a, b) => b.score - a.score);
-
-        document.getElementById('resultUserName').innerText = data.name;
-        document.getElementById('resultUserInfo').innerText = `العمر: ${data.age}`;
-
-        const topSpecialtiesContainer = document.getElementById('topSpecialties');
-        const barChart = document.getElementById('barChart');
-        topSpecialtiesContainer.innerHTML = '';
-        barChart.innerHTML = '';
-
-        const maxScore = Math.max(1, ...rankedSpecialties.map(s => s.score));
-
-        rankedSpecialties.slice(0, 3).forEach((specialty, index) => {
-            const percent = Math.round((specialty.score / maxScore) * 100);
-            const card = document.createElement('div');
-            card.className = `specialty-card rank-${index + 1}`;
-            card.innerHTML = `
-                <div class="specialty-title">${escapeHtml(specialty.name)}</div>
-                <div class="specialty-score">${specialty.score} نقطة</div>
-                <div class="specialty-description">${escapeHtml(specialty.description)}</div>
-                <div style="margin-top:15px;font-size:0.9rem;color:var(--text-secondary)">
-                    التوافق النسبي: ${percent}%
-                </div>
-            `;
-            topSpecialtiesContainer.appendChild(card);
-        });
-
-        rankedSpecialties.forEach(specialty => {
-            const percent = Math.round((specialty.score / maxScore) * 100);
-            const item = document.createElement('div');
-            item.className = 'chart-item';
-            item.innerHTML = `
-                <div class="chart-label">${escapeHtml(specialty.name)}</div>
-                <div class="chart-bar-container">
-                    <div class="chart-bar" style="width:${percent}%;background:linear-gradient(135deg,${specialty.color},${specialty.color}CC)">
-                        ${specialty.score}
-                    </div>
-                </div>
-            `;
-            barChart.appendChild(item);
-        });
-
-        const resultsContainer = document.getElementById('resultsContainer');
-        resultsContainer.style.display = 'block';
-
-        const paymentSection = resultsContainer.querySelector('.payment-section');
-        if (paymentSection) paymentSection.style.display = 'none';
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => showResultFromData(resultData));
-    } else {
-        showResultFromData(resultData);
-    }
-})();
+document.addEventListener('DOMContentLoaded', () => {
+    showWelcome();
+});

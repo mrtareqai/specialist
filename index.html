@@ -13,7 +13,8 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- Open Graph -->
     <meta property="og:title" content="إختصاصي - اكتشف تخصصك الجامعي">
@@ -29,7 +30,7 @@
     <meta name="twitter:description" content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك">
     <meta name="twitter:image" content="logo.png">
 
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -143,8 +144,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="phoneOrId">رقم الهاتف أو رقم الهوية *</label>
-                    <input type="text" id="phoneOrId" placeholder="مثال: 0501234567 أو رقم الهوية" required>
+                    <label for="phoneOrId">رقم الهاتف*</label>
+                    <input type="text" id="phoneOrId" placeholder="مثال: 0501234567" required>
                 </div>
 
                 <div class="form-group">
@@ -163,7 +164,8 @@
                 <div id="questionContainer" class="question-container active"></div>
 
                 <div class="btn-container">
-                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>→ السابق</button>
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>→
+                        السابق</button>
                     <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>التالي ←</button>
                 </div>
             </div>
@@ -181,98 +183,35 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Results -->
-            <div class="results-container" id="resultsContainer" style="display: none;">
-                <div class="results-header">
-                    <h2>🎯 ملخص نتيجتك</h2>
-                </div>
-
-                <div class="user-info-display">
-                    <h3 id="resultUserName"></h3>
-                    <p id="resultUserInfo"></p>
-                </div>
-
-                <div class="result-summary-box">
-                    <p style="margin: 0; font-weight: 700; font-size: 18px;">
-                        تم تحليل 80 إجابة بنجاح
-                    </p>
-                    <p style="margin: 10px 0 0; line-height: 1.9;">
-                        بناءً على إجاباتك، ظهر نمط واضح يشير إلى مجموعة من التخصصات المناسبة لك،
-                        لكن هناك تفاصيل مهمة تحتاج تقريرًا كاملًا لعرضها.
-                    </p>
-                </div>
-
-                <h3 style="margin-bottom: 18px; text-align: center;">أفضل 3 تخصصات موصى بها لك:</h3>
-
-                <div class="top-specialties" id="topSpecialties"></div>
-
-                <div class="chart-container">
-                    <div class="chart-title">📊 توزيع النقاط حسب المجال</div>
-                    <div class="bar-chart" id="barChart"></div>
-                </div>
-
-                <div class="result-warning-box">
-                    <p style="margin: 0; font-weight: 700;">
-                        ⚠️ يوجد تخصص قد تفكر فيه… لكنه قد لا يكون الأنسب لك.
-                    </p>
-                    <p style="margin: 10px 0 0; line-height: 1.8;">
-                        التقرير الكامل يوضح لك لماذا، وما المسار الأفضل لك، وكيف تتجنب اختيارًا خاطئًا يضيّع وقتك.
-                    </p>
-                </div>
-
-                <!-- Payment Section -->
-                <div class="payment-section">
-                    <div class="payment-box">
-                        <h3>🚀 افتح تقريرك الكامل الآن</h3>
-                        <p class="payment-description">
-                            احصل على:
-                            <br>✔ التخصص الأنسب لك بدقة
-                            <br>✔ سبب الاختيار بناءً على شخصيتك
-                            <br>✔ التخصصات التي يجب أن تتجنبها
-                            <br>✔ خطة واضحة لمستقبلك
-                        </p>
-
-                        <div class="payment-benefit">
-                            <p style="margin: 0; font-weight: 700;">💰 قيمة التقرير الكامل: 500 ريال</p>
-                            <p style="margin: 8px 0 0; font-size: 13px; opacity: 0.8;">⏳ يتم التعامل مع عدد محدود يوميًا</p>
-                        </div>
-
-                        <div class="payment-buttons">
-                            <a href="https://wa.me/967779175085" target="_blank" class="btn btn-whatsapp">
-                                💬 التواصل عبر WhatsApp
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- WhatsApp Modal -->
-    <div class="modal" id="whatsappModal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📱 نتيجتك جاهزة</h2>
+    <!-- WhatsApp Gate / Overlay -->
+    <div class="gate-screen" id="whatsappGate" style="display: none;">
+        <div class="gate-box">
+            <div class="gate-icon">📱</div>
+            <h2>🎯 نتيجتك جاهزة</h2>
+            <p class="gate-message">
+                تم تحليل 80 إجابة بنجاح.<br>
+                اكتشفنا نمط شخصيتك والتخصصات الأقرب لك.
+            </p>
+
+            <div class="gate-highlight">
+                ⚠️ يوجد تخصص قد تفكر فيه… لكنه ليس الخيار الأفضل لك.
             </div>
-            <div class="modal-body">
-                <p class="modal-message">
-                    🎯 تم تحليل 80 إجابة بنجاح.<br>
-                    اكتشفنا نمط شخصيتك والتخصصات الأقرب لك.<br><br>
-                    ⚠️ يوجد تخصص شائع قد تفكر فيه… لكنه ليس الخيار الأفضل لك.<br><br>
-                    اضغط بالأسفل لإكمال الاستلام عبر WhatsApp.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <a href="" id="whatsappLink" target="_blank" class="btn btn-whatsapp btn-large">
-                    💬 تواصل عبر WhatsApp
-                </a>
-            </div>
+
+            <p class="gate-note">
+                للتواصل واستلام نتيجتك الكاملة، اضغط الزر التالي:
+            </p>
+
+            <a href="" id="whatsappBtn" target="_blank" class="btn btn-whatsapp btn-large">
+                💬 تواصل عبر WhatsApp
+            </a>
         </div>
     </div>
 
-    <script src="questions.js?v=4"></script>
-    <script src="script.js?v=4"></script>
+    <script src="questions.js?v=5"></script>
+    <script src="script.js?v=5"></script>
 
     <!-- Particles Animation -->
     <script>
