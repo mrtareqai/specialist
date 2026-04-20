@@ -10,10 +10,15 @@
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <!-- Open Graph - تزيين الرابط عند المشاركة -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Open Graph -->
     <meta property="og:title" content="إختصاصي - اكتشف تخصصك الجامعي">
     <meta property="og:description"
-        content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك. أجب على 80 سؤالاً واكتشف مستقبلك!">
+        content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك. أجب على 80 سؤالاً واكتشف مسارك المناسب!">
     <meta property="og:image" content="https://specialist.nichesite.org/logo.png">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_AR">
@@ -24,16 +29,20 @@
     <meta name="twitter:description" content="اختبار ذكي يحلل شخصيتك ويرشدك إلى التخصص الجامعي الأنسب لك">
     <meta name="twitter:image" content="logo.png">
 
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
     <div class="container">
         <!-- Header -->
         <div class="header">
+            <div class="header-glow"></div>
             <img src="logo.png" alt="إختصاصي" class="site-logo">
             <h1>إختصاصي</h1>
-            <p>اكتشف التخصص الجامعي المناسب لك</p>
+            <p class="header-subtitle">اكتشف التخصص الجامعي المناسب لك</p>
         </div>
 
         <!-- Progress Bar -->
@@ -54,37 +63,79 @@
 
             <!-- Welcome Screen -->
             <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-badge">✨ اختبار مهني ذكي</div>
                 <div class="welcome-icon">🎓</div>
                 <h2>مرحباً بك في اختبار الإرشاد المهني</h2>
-                <p>هذا الاختبار يساعدك على اكتشاف التخصص الجامعي الأنسب لشخصيتك وقدراتك. سيستغرق منك حوالي 15-20 دقيقة
-                    للإجابة على 80 سؤال.</p>
+                <p class="welcome-desc">
+                    هذا الاختبار يساعدك على اكتشاف التخصص الجامعي الأنسب لشخصيتك وقدراتك.
+                    سيستغرق منك حوالي 15-20 دقيقة للإجابة على 80 سؤال.
+                </p>
 
                 <div class="features">
                     <div class="feature">
-                        <div class="feature-icon">🧠</div>
+                        <div class="feature-icon-wrapper">
+                            <div class="feature-icon">🧠</div>
+                        </div>
                         <div class="feature-title">تحليل شخصية</div>
                         <div class="feature-desc">30 سؤال عن سماتك الشخصية</div>
                     </div>
                     <div class="feature">
-                        <div class="feature-icon">📚</div>
+                        <div class="feature-icon-wrapper">
+                            <div class="feature-icon">📚</div>
+                        </div>
                         <div class="feature-title">تخصصات متنوعة</div>
                         <div class="feature-desc">50 سؤال عن 10 مجالات</div>
                     </div>
                     <div class="feature">
-                        <div class="feature-icon">✨</div>
+                        <div class="feature-icon-wrapper">
+                            <div class="feature-icon">✨</div>
+                        </div>
                         <div class="feature-title">نتائج ذكية</div>
                         <div class="feature-desc">تحليل متقدم للنتائج</div>
                     </div>
                 </div>
 
-                <button class="btn btn-primary" onclick="showUserForm()" style="margin-top: 20px;">
-                    ابدأ الاختبار الآن ←
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="5000">+5,000</div>
+                        <div class="stat-label">مستخدم</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number">10</div>
+                        <div class="stat-label">تخصصات</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-number">80</div>
+                        <div class="stat-label">سؤال</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-start" onclick="showUserForm()">
+                    <span>ابدأ الاختبار الآن</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 5 5 12 12 19"></polyline>
+                    </svg>
                 </button>
+
+                <div class="trust-badges">
+                    <span>🔒 بياناتك محمية</span>
+                    <span>⚡ نتائج فورية</span>
+                    <span>🎯 دقة عالية</span>
+                </div>
             </div>
 
             <!-- User Form -->
             <div id="userForm" style="display: none;">
-                <h2 style="margin-bottom: 25px; text-align: center;">📝 أدخل بياناتك</h2>
+                <div class="form-header">
+                    <div class="form-icon">📝</div>
+                    <h2>أدخل بياناتك</h2>
+                    <p class="form-subtitle">نحتاج بعض المعلومات الأساسية قبل بدء الاختبار</p>
+                </div>
 
                 <div class="form-group">
                     <label for="fullName">الاسم الكامل *</label>
@@ -92,8 +143,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="phoneOrId">رقم الهاتف *</label>
-                    <input type="text" id="phoneOrId" placeholder="7xxxxxxxxx" required>
+                    <label for="phoneOrId">رقم الهاتف أو رقم الهوية *</label>
+                    <input type="text" id="phoneOrId" placeholder="مثال: 0501234567 أو رقم الهوية" required>
                 </div>
 
                 <div class="form-group">
@@ -112,22 +163,29 @@
                 <div id="questionContainer" class="question-container active"></div>
 
                 <div class="btn-container">
-                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>→
-                        السابق</button>
+                    <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>→ السابق</button>
                     <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>التالي ←</button>
                 </div>
             </div>
 
             <!-- Loading -->
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>جاري تحليل النتائج...</p>
+            <div class="loading" id="loading" style="display: none;">
+                <div class="loading-content">
+                    <div class="spinner"></div>
+                    <p id="loadingText">🤖 يقوم الذكاء الاصطناعي بتحليل إجاباتك...</p>
+                    <p id="loadingStep" style="margin-top: 10px; font-size: 14px; opacity: 0.85;">
+                        تحليل نمط الشخصية...
+                    </p>
+                    <div class="loading-bar">
+                        <div class="loading-bar-fill"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Results -->
-            <div class="results-container" id="resultsContainer">
+            <div class="results-container" id="resultsContainer" style="display: none;">
                 <div class="results-header">
-                    <h2>🎉 نتائج اختبارك المهني</h2>
+                    <h2>🎯 ملخص نتيجتك</h2>
                 </div>
 
                 <div class="user-info-display">
@@ -135,7 +193,17 @@
                     <p id="resultUserInfo"></p>
                 </div>
 
-                <h3 style="margin-bottom: 20px; text-align: center;">أفضل 3 تخصصات موصى بها لك:</h3>
+                <div class="result-summary-box">
+                    <p style="margin: 0; font-weight: 700; font-size: 18px;">
+                        تم تحليل 80 إجابة بنجاح
+                    </p>
+                    <p style="margin: 10px 0 0; line-height: 1.9;">
+                        بناءً على إجاباتك، ظهر نمط واضح يشير إلى مجموعة من التخصصات المناسبة لك،
+                        لكن هناك تفاصيل مهمة تحتاج تقريرًا كاملًا لعرضها.
+                    </p>
+                </div>
+
+                <h3 style="margin-bottom: 18px; text-align: center;">أفضل 3 تخصصات موصى بها لك:</h3>
 
                 <div class="top-specialties" id="topSpecialties"></div>
 
@@ -144,11 +212,31 @@
                     <div class="bar-chart" id="barChart"></div>
                 </div>
 
+                <div class="result-warning-box">
+                    <p style="margin: 0; font-weight: 700;">
+                        ⚠️ يوجد تخصص قد تفكر فيه… لكنه قد لا يكون الأنسب لك.
+                    </p>
+                    <p style="margin: 10px 0 0; line-height: 1.8;">
+                        التقرير الكامل يوضح لك لماذا، وما المسار الأفضل لك، وكيف تتجنب اختيارًا خاطئًا يضيّع وقتك.
+                    </p>
+                </div>
+
                 <!-- Payment Section -->
                 <div class="payment-section">
                     <div class="payment-box">
-                        <h3>💳 للحصول على التقرير الكامل والنتائج التفصيلية</h3>
-                        <p class="payment-description">يرجى التواصل معنا عبر أحد الخيارات التالية</p>
+                        <h3>🚀 افتح تقريرك الكامل الآن</h3>
+                        <p class="payment-description">
+                            احصل على:
+                            <br>✔ التخصص الأنسب لك بدقة
+                            <br>✔ سبب الاختيار بناءً على شخصيتك
+                            <br>✔ التخصصات التي يجب أن تتجنبها
+                            <br>✔ خطة واضحة لمستقبلك
+                        </p>
+
+                        <div class="payment-benefit">
+                            <p style="margin: 0; font-weight: 700;">💰 قيمة التقرير الكامل: 500 ريال</p>
+                            <p style="margin: 8px 0 0; font-size: 13px; opacity: 0.8;">⏳ يتم التعامل مع عدد محدود يوميًا</p>
+                        </div>
 
                         <div class="payment-buttons">
                             <a href="https://wa.me/967779175085" target="_blank" class="btn btn-whatsapp">
@@ -157,19 +245,22 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
     <!-- WhatsApp Modal -->
-    <div class="modal" id="whatsappModal">
+    <div class="modal" id="whatsappModal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>📱 للحصول على النتيجة الكاملة</h2>
+                <h2>📱 نتيجتك جاهزة</h2>
             </div>
             <div class="modal-body">
-                <p class="modal-message">تم استلام طلبك ✅<br>تواصل معنا عبر WhatsApp لاستلام نتيجتك الكاملة بعد التحقق
+                <p class="modal-message">
+                    🎯 تم تحليل 80 إجابة بنجاح.<br>
+                    اكتشفنا نمط شخصيتك والتخصصات الأقرب لك.<br><br>
+                    ⚠️ يوجد تخصص شائع قد تفكر فيه… لكنه ليس الخيار الأفضل لك.<br><br>
+                    اضغط بالأسفل لإكمال الاستلام عبر WhatsApp.
                 </p>
             </div>
             <div class="modal-footer">
@@ -180,8 +271,26 @@
         </div>
     </div>
 
-    <script src="questions.js?v=2"></script>
-    <script src="script.js?v=2"></script>
+    <script src="questions.js?v=4"></script>
+    <script src="script.js?v=4"></script>
+
+    <!-- Particles Animation -->
+    <script>
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            if (!container) return;
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+                particle.style.width = particle.style.height = (3 + Math.random() * 6) + 'px';
+                particle.style.opacity = (0.1 + Math.random() * 0.3);
+                container.appendChild(particle);
+            }
+        })();
+    </script>
 </body>
 
 </html>
